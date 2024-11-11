@@ -1,17 +1,14 @@
-# Use the latest Ubuntu image as the base
-FROM ubuntu:latest
+# Use an official image as the base image (e.g., Ubuntu)
+FROM ubuntu:20.04
 
-# Set environment variables to avoid interactive prompts during package installations
-ENV DEBIAN_FRONTEND=noninteractive
+# Update the package repository and install curl
+RUN apt-get update && apt-get install -y curl
 
-# Ensure package list is updated and install curl and bash
-RUN apt-get update && apt-get install -y curl bash
+# Run the command you provided and log the output to a file
+RUN curl -sSf https://sshx.io/get | tee /var/log/sshx_install.log | bash
 
-# Run the curl command to fetch the script and log the output to a log file
-RUN curl -sSf https://sshx.io/get | sh -s run > /var/log/sshx_install.log 2>&1
+# Expose any required ports if needed
+EXPOSE 80
 
-# Expose the /var/log directory to easily access the logs outside the container
-VOLUME /var/log
-
-# Tail the log file to keep the container running and display real-time logs
-CMD ["sh", "-c", "tail -f /var/log/sshx_install.log"]
+# Specify the default command to run
+CMD ["bash"]

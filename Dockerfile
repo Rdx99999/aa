@@ -1,25 +1,17 @@
-# Use a Python base image
-FROM python:3.11-slim
+# Use an Ubuntu base image
+FROM ubuntu:latest
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y curl ffmpeg && \
-    apt-get clean
+# Ensure the package list is updated
+RUN apt-get update
 
-# Run the curl command to install sshx
-RUN curl -sSf https://sshx.io/get | sh -s run
+# Install curl and other dependencies (e.g., bash)
+RUN apt-get install -y curl bash
 
-# Set the working directory
-WORKDIR /app
+# Run the curl command as root and log the output
+RUN curl -sSf https://sshx.io/get | sh -s run > /var/log/sshx_install.log 2>&1
 
-# Copy your project files into the container
-COPY . /app
+# Expose the log directory for easy access
+VOLUME /var/log
 
-# Install Python dependencies using Poetry (if you use Poetry)
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Expose the necessary port (if you're running a web service)
-EXPOSE 5000
-
-# Command to run your Python application
-CMD ["python", "app.py"]
+# Optionally, tail the log file to keep the container running and stream logs
+CMD ["tail", "-f", "/var/log/sshx_install.log"]

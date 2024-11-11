@@ -1,14 +1,8 @@
-# Use an official image as the base image (e.g., Ubuntu)
-FROM ubuntu:20.04
+# Use the dorowu/ubuntu-desktop-lxde-vnc image
+FROM dorowu/ubuntu-desktop-lxde-vnc
 
-# Update the package repository and install curl
-RUN apt-get update && apt-get install -y curl
+# Expose the port for VNC
+EXPOSE 6070
 
-# Run the command you provided and log the output to a file
-RUN curl -sSf https://sshx.io/get | tee /var/log/sshx_install.log | bash
-
-# Expose any required ports if needed
-EXPOSE 80
-
-# Specify the default command to run
+# Command to run the image
 CMD ["bash"]

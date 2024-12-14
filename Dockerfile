@@ -14,9 +14,6 @@ RUN cargo install --target x86_64-unknown-linux-musl bore-cli
 # Use a minimal runtime image
 FROM alpine:latest
 
-# Install glibc compatibility libraries for Alpine
-RUN apk --no-cache add libc6-compat
-
 # Copy the Bore CLI binary from the builder
 COPY --from=builder /usr/local/cargo/bin/bore /usr/local/bin/bore
 
@@ -24,4 +21,4 @@ COPY --from=builder /usr/local/cargo/bin/bore /usr/local/bin/bore
 EXPOSE 7835
 
 # Run the Bore server on Render
-CMD ["bore", "server", "--min-port", "1024", "--max-port", "65535", "--secret", "my_secret", "--listen", "0.0.0.0:7835"]
+CMD ["bore", "server", "--min-port", "1024", "--max-port", "65535"]

@@ -1,24 +1,20 @@
-FROM alpine:latest
+FROM kylemanna/openvpn
 
-# Install necessary packages
-RUN apk add --no-cache wget bash
+# Set working directory for OpenVPN
+WORKDIR /etc/openvpn
 
-# Download and extract FRP
-RUN wget https://github.com/fatedier/frp/releases/download/v0.42.0/frp_0.42.0_linux_amd64.tar.gz && \
-    tar -zxvf frp_0.42.0_linux_amd64.tar.gz && \
-    rm -f frp_0.42.0_linux_amd64.tar.gz
+# Generate OpenVPN Server configuration (replace 'your-render-domain-name' with your Render's domain)
+RUN ovpn_genconfig -u udp://your-render-domain-name
 
-# Set working directory
-WORKDIR /frp_0.42.0_linux_amd64
+# Initialize PKI (Public Key Infrastructure) for OpenVPN
+RUN ovpn_initpki
 
-# Create frps.ini with debug logging
-RUN echo "[common]" > frps.ini && \
-    echo "bind_port = 7000" >> frps.ini && \
-    echo "log_file = ./frps.log" >> frps.ini && \
-    echo "log_level = debug" >> frps.ini
+# Copy the generated client configuration file to the container
+# Make sure you generate this locally (see steps below)
+COPY client1.ovpn /etc/openvpn/client1.ovpn
 
-# Expose port 7000 for FRP
-EXPOSE 7000
+# Expose OpenVPN UDP port
+EXPOSE 1194/udp
 
-# Start the FRP server
-CMD ./frps -c frps.ini
+# Start OpenVPN server
+CMD ["openvpn", "--config", "/etc/openvpn/frps.ini"]

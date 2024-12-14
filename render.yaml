@@ -1,0 +1,12 @@
+version: '3'
+services:
+  openvpn:
+    build: .
+    ports:
+      - "1194:1194/udp"
+    volumes:
+      - ovpn-data:/etc/openvpn
+    environment:
+      - OVPN_SERVER_URL=udp://aa-cv1p.onrender.com
+volumes:
+  ovpn-data:

@@ -1,24 +1,17 @@
-# Use a Rust image to build the Bore CLI binary
-FROM rust:latest as builder
-
-# Install musl-gcc and related dependencies
-RUN apt-get update && apt-get install -y \
-    musl-tools build-essential
-
-# Add the musl target for Rust
-RUN rustup target add x86_64-unknown-linux-musl
-
-# Build Bore CLI as a statically linked binary
-RUN cargo install --target x86_64-unknown-linux-musl bore-cli
-
-# Use a minimal runtime image
 FROM alpine:latest
 
-# Copy the Bore CLI binary from the builder
-COPY --from=builder /usr/local/cargo/bin/bore /usr/local/bin/bore
+# Install wget and frp
+RUN apk add --no-cache wget
+RUN wget https://github.com/fatedier/frp/releases/download/v0.42.0/frp_0.42.0_linux_amd64.tar.gz
+RUN tar -zxvf frp_0.42.0_linux_amd64.tar.gz && rm -f frp_0.42.0_linux_amd64.tar.gz
+WORKDIR frp_0.42.0_linux_amd64
 
-# Expose the server port
-EXPOSE 7835
+# Create frps.ini (FRP Server config file)
+RUN echo '[common]' > frps.ini && \
+    echo 'bind_port = 7000' >> frps.ini
 
-# Run the Bore server on Render
-CMD ["bore", "server", "--min-port", "1024", "--max-port", "65535"]
+# Expose necessary ports (the FRP server port)
+EXPOSE 7000
+
+# Run the FRP server
+CMD ./frps -c frps.ini

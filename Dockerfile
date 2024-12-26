@@ -2,4 +2,4 @@
 FROM jlesage/firefox
 
 # Expose the VNC port for accessing the Firefox instance
-EXPOSE 5800
+EXPOSE 6070

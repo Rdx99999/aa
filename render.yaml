@@ -4,6 +4,6 @@ services:
     env: docker
     dockerfilePath: ./Dockerfile
     buildCommand: ""  # No build command needed
-    startCommand: "docker run -d --name=firefox -p 5800:5800 -v /docker/appdata/firefox:/config:rw jlesage/firefox"
+    startCommand: "docker run -d --name=firefox -p 6070:5800 -v /docker/appdata/firefox:/config:rw jlesage/firefox"
     ports:
       - 6070

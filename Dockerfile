@@ -1,5 +1,5 @@
-# Use the official jlesage/firefox image
-FROM jlesage/firefox
+# Use the domistyle/tor-browser image
+FROM domistyle/tor-browser
 
-# Expose the VNC port for accessing the Firefox instance
-EXPOSE 6070
+# Expose the VNC port
+EXPOSE 5800

@@ -1,20 +1,10 @@
-# Use the official Ubuntu image as a base
-FROM ubuntu:latest
+# Use the official Firefox image from jlesage
+FROM jlesage/firefox
 
-# Set the working directory to /app
+# Expose the necessary port (5800 for VNC access)
+EXPOSE 5800
+
+# Set the working directory
 WORKDIR /app
 
-# Install OpenVPN and other required packages
-RUN apt update && apt install -y openvpn easy-rsa
-
-# Generate server certificates and keys
-RUN easy-rsa build-server-full server
-
-# Create the OpenVPN server configuration file
-COPY server.conf /etc/openvpn/
-
-# Expose the OpenVPN port
-EXPOSE 1194/udp
-
-# Run the OpenVPN server when the container starts
-CMD ["openvpn", "--config", "/etc/openvpn/server.conf"]
+# Optionally, you can add any custom configuration or additional files here
